@@ -4,7 +4,7 @@ Help
 jascotty2 Changelog
 -----------------
 
-Version 0.2.2
+Version 0.2.2 :
 * various null pointer fixes (could have nullpointerException on load without)
 * improved help listing
 * added console help support
