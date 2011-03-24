@@ -3,12 +3,13 @@ package me.taylorkelly.help;
 import java.util.ArrayList;
 
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class Searcher {
 
     private HelpList helpList;
-    private Player player;
+    private CommandSender player;
     private MatchList matches;
     private String query;
 
@@ -16,7 +17,7 @@ public class Searcher {
         this.helpList = warpList;
     }
 
-    public void addPlayer(Player player) {
+    public void addPlayer(CommandSender player) {
         this.player = player;
     }
 

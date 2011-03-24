@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import org.angelsl.minecraft.randomshit.fontwidth.MinecraftFontWidthCalculator;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class HelpEntry {
@@ -23,7 +24,7 @@ public class HelpEntry {
         this.main = main;
         this.permissions = permissions;
         this.visible = visible;
-        lineLength = process(this);
+        this.lineLength = processLength(command, description);//process(this);
     }
 
     public HelpEntry(String command, String description, String plugin) {
@@ -38,14 +39,14 @@ public class HelpEntry {
         this(command, description, plugin, false, permissions, true);
     }
 
-    public boolean playerCanUse(Player player) {
-        if (permissions.length == 0) {
+    public boolean playerCanUse(CommandSender player) {
+        if (permissions.length == 0 || !(player instanceof Player)) {
             return true;
         }
         for (String permission : permissions) {
             if (permission.equalsIgnoreCase("OP") && player.isOp()) {
                 return true;
-            } else if (HelpPermissions.permission(player, permission)) {
+            } else if (HelpPermissions.permission((Player)player, permission)) {
                 return true;
             }
         }
@@ -56,24 +57,13 @@ public class HelpEntry {
         ChatColor commandColor = ChatColor.RED;
         ChatColor pluginColor = ChatColor.GREEN;
         ChatColor descriptionColor = ChatColor.WHITE;
-
-        StringBuilder builder = new StringBuilder(commandColor.toString());
-        builder.append("/");
-        builder.append(command);
-        builder.append(ChatColor.WHITE.toString());
-        builder.append(" : ");
-        builder.append("(via ");
-        builder.append(pluginColor.toString());
-        builder.append(plugin);
-        builder.append(ChatColor.WHITE.toString());
-        builder.append(") ");
-        builder.append(descriptionColor.toString());
-        builder.append(description);
-
-        return builder.toString();
+        return String.format("%s/%s%s : (via %s%s%s) %s%s", 
+                commandColor.toString(), command, ChatColor.WHITE.toString(), 
+                pluginColor.toString(), plugin, ChatColor.WHITE.toString(),
+                descriptionColor.toString(), description);
     }
-
-    private int process(HelpEntry entry) {
+    /*
+    private static int process(HelpEntry entry) {
         ChatColor commandColor = ChatColor.RED;
         ChatColor descriptionColor = ChatColor.WHITE;
         int width = 325;
@@ -95,8 +85,28 @@ public class HelpEntry {
         } else {
             return 1 + (int) Math.ceil((double) MinecraftFontWidthCalculator.getStringWidth("  " + entry.description) / width);
         }
+    }//*/
+    protected int processLength(){
+        return processLength(command, description);
     }
+    private static int processLength(String command, String desc) {
+        ChatColor commandColor = ChatColor.RED;
+        ChatColor descriptionColor = ChatColor.WHITE;
+        int width = 325;
+        
+        String entry = String.format("%s/%s%s : %s", commandColor.toString(),
+                command, ChatColor.WHITE.toString(), descriptionColor.toString());
+        //Find remaining length left
+        int sizeRemaining = width - MinecraftFontWidthCalculator.getStringWidth(entry);
+        //entryBuilder = new StringBuilder(entryBuilder.toString().replace("[", ChatColor.GRAY.toString() + "[").replace("]", "]" + commandColor.toString()));
 
+        int descriptionSize = MinecraftFontWidthCalculator.getStringWidth(desc);
+        if (sizeRemaining > descriptionSize) {
+            return 1;
+        } else {
+            return 1 + (int) Math.ceil((double) MinecraftFontWidthCalculator.getStringWidth("  " + desc) / width);
+        }
+    }
     void save(File dataFolder) {
         File folder = new File(dataFolder, "ExtraHelp");
         File file = new File(folder, plugin + "_orig.yml");

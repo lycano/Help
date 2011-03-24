@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 
 import org.bukkit.entity.Player;
 
@@ -23,26 +24,40 @@ public class HelpList {
         pluginHelpList = new HashMap<String, HashMap<String, HelpEntry>>();
     }
 
-    public ArrayList<HelpEntry> getSortedHelp(Player player, int start, int size) {
+    public ArrayList<HelpEntry> getSortedHelp(CommandSender player, int start, int size) {
         ArrayList<HelpEntry> ret = new ArrayList<HelpEntry>();
         List<String> names = new ArrayList<String>(mainHelpList.keySet());
         Collator collator = Collator.getInstance();
         collator.setStrength(Collator.SECONDARY);
         Collections.sort(names, collator);
 
-        int index = 0;
-        int currentCount = 0;
-        while (index < names.size() && ret.size() < size) {
-            String currName = names.get(index);
-            HelpEntry entry = mainHelpList.get(currName);
-            if (entry.playerCanUse(player) && entry.visible) {
-                if (currentCount >= start) {
-                    ret.add(entry);
-                } else {
-                    currentCount++;
+
+        if (player instanceof Player) {
+            int index = 0;
+            int currentCount = 0;
+            while (index < names.size() && ret.size() < size) {
+                String currName = names.get(index);
+                HelpEntry entry = mainHelpList.get(currName);
+                if (entry.playerCanUse((Player) player) && entry.visible) {
+                    if (currentCount >= start) {
+                        ret.add(entry);
+                    } else {
+                        currentCount++;
+                    }
                 }
+                index++;
             }
-            index++;
+        } else {
+                for (int index = 0, currentCount = 0; index < names.size() && ret.size() < size; ++index) {
+                    HelpEntry entry = mainHelpList.get(names.get(index));
+                    if (entry.visible) {
+                        if (currentCount >= start) {
+                            ret.add(entry);
+                        }else {
+                            currentCount++;
+                        }
+                    }
+                }
         }
         return ret;
     }
@@ -51,17 +66,20 @@ public class HelpList {
         return mainHelpList.size();
     }
 
-    public double getMaxEntries(Player player) {
-        int count = 0;
-        for (HelpEntry entry : mainHelpList.values()) {
-            if (entry.playerCanUse(player) && entry.visible) {
-                count++;
+    public double getMaxEntries(CommandSender player) {
+        if (player instanceof Player) {
+            int count = 0;
+            for (HelpEntry entry : mainHelpList.values()) {
+                if (entry.playerCanUse((Player) player) && entry.visible) {
+                    count++;
+                }
             }
+            return count;
         }
-        return count;
+        return mainHelpList.size();
     }
 
-    public ArrayList<HelpEntry> getSortedHelp(Player player, int start, int size, String plugin) {
+    public ArrayList<HelpEntry> getSortedHelp(CommandSender player, int start, int size, String plugin) {
         ArrayList<HelpEntry> ret = new ArrayList<HelpEntry>();
         if (!pluginHelpList.containsKey(plugin)) {
             return ret;
@@ -71,27 +89,40 @@ public class HelpList {
             collator.setStrength(Collator.SECONDARY);
             Collections.sort(names, collator);
 
-            int index = 0;
-            int currentCount = 0;
-            int lineLength = 0;
-            while (index < names.size() && lineLength < size) {
-                String currName = names.get(index);
-                HelpEntry entry = pluginHelpList.get(plugin).get(currName);
-                if (entry.playerCanUse(player) && entry.visible) {
-                    if (currentCount >= start) {
-                        ret.add(entry);
-                        lineLength += entry.lineLength;
-                    } else {
-                        currentCount++;
+            if (player instanceof Player) {
+                int index = 0;
+                int currentCount = 0;
+                int lineLength = 0;
+                while (index < names.size() && ret.size() < size){// && lineLength < size) {
+                    String currName = names.get(index);
+                    HelpEntry entry = pluginHelpList.get(plugin).get(currName);
+                    if (entry.playerCanUse((Player) player) && entry.visible) {
+                        if (currentCount >= start) {
+                            ret.add(entry);
+                            lineLength += entry.lineLength;
+                        } else {
+                            currentCount++;
+                        }
+                    }
+                    index++;
+                }
+            } else {
+                for (int index = 0, currentCount = 0; index < names.size() && ret.size() < size; ++index) {
+                    HelpEntry entry = mainHelpList.get(names.get(index));
+                    if (entry.visible) {
+                        if (currentCount >= start) {
+                            ret.add(entry);
+                        }else {
+                            currentCount++;
+                        }
                     }
                 }
-                index++;
             }
             return ret;
         }
     }
 
-    public MatchList getMatches(String query, Player player) {
+    public MatchList getMatches(String query, CommandSender player) {
         ArrayList<HelpEntry> commandMatches = new ArrayList<HelpEntry>();
         ArrayList<HelpEntry> pluginExactMatches = new ArrayList<HelpEntry>();
         ArrayList<HelpEntry> pluginPartialMatches = new ArrayList<HelpEntry>();
@@ -139,15 +170,18 @@ public class HelpList {
         }
     }
 
-    public double getMaxEntries(Player player, String plugin) {
+    public double getMaxEntries(CommandSender player, String plugin) {
         if (pluginHelpList.containsKey(plugin)) {
-            int count = 0;
-            for (HelpEntry entry : pluginHelpList.get(plugin).values()) {
-                if (entry.playerCanUse(player) && entry.visible) {
-                    count++;
+            if (player instanceof Player) {
+                int count = 0;
+                for (HelpEntry entry : pluginHelpList.get(plugin).values()) {
+                    if (entry.playerCanUse((Player) player) && entry.visible) {
+                        count++;
+                    }
                 }
+                return count;
             }
-            return count;
+            return pluginHelpList.get(plugin).size();
         } else {
             return 0;
         }
@@ -193,7 +227,7 @@ public class HelpList {
         }
     }
 
-    public void listPlugins(Player player) {
+    public void listPlugins(CommandSender player) {
         StringBuilder list = new StringBuilder();
         for (String plugin : pluginHelpList.keySet()) {
             list.append(ChatColor.GREEN.toString());
@@ -206,7 +240,7 @@ public class HelpList {
         player.sendMessage(list.toString());
     }
 
-    public void reload(Player player, File dataFolder) {
+    public void reload(CommandSender player, File dataFolder) {
         mainHelpList = new HashMap<String, HelpEntry>();
         pluginHelpList = new HashMap<String, HashMap<String, HelpEntry>>();
 

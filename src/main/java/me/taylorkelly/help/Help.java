@@ -51,25 +51,25 @@ public class Help extends JavaPlugin {
         HelpLogger.info(name + " " + version + " enabled");
     }
 
+    @Override
     public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
         String[] split = args;
         String commandName = command.getName().toLowerCase();
 
-        if (sender instanceof Player) {
-            Player player = (Player) sender;
+        //if (sender instanceof Player) {
             if (commandName.equals("help")) {
                 /**
                  * /help (#)
                  */
                 if (split.length == 0 || (split.length == 1 && isInteger(split[0]))) {
-                    Lister lister = new Lister(helpList, player);
+                    Lister lister = new Lister(helpList, sender);
                     if (split.length == 1) {
                         int page = Integer.parseInt(split[0]);
                         if (page < 1) {
-                            player.sendMessage(ChatColor.RED + "Page number can't be below 1.");
+                            sender.sendMessage(ChatColor.RED + "Page number can't be below 1.");
                             return true;
-                        } else if (page > lister.getMaxPages(player)) {
-                            player.sendMessage(ChatColor.RED + "There are only " + lister.getMaxPages(player) + " pages of help");
+                        } else if (page > lister.getMaxPages()) {
+                            sender.sendMessage(ChatColor.RED + "There are only " + lister.getMaxPages() + " pages of help");
                             return true;
                         }
                         lister.setPage(page);
@@ -82,42 +82,42 @@ public class Help extends JavaPlugin {
                      * /help plugins
                      */
                 } else if (split.length == 1 && split[0].equalsIgnoreCase("plugins")) {
-                    helpList.listPlugins(player);
+                    helpList.listPlugins(sender);
 
                     /**
                      * /help reload
                      */
                 } else if (split.length == 1 && split[0].equalsIgnoreCase("reload")) {
-                    helpList.reload(player, getDataFolder());
+                    helpList.reload(sender, getDataFolder());
 
                     /**
                      * /help search [query]
                      */
                 } else if (split.length > 1 && split[0].equalsIgnoreCase("search")) {
-                    String name = "";
+                    String hname = "";
                     for (int i = 1; i < split.length; i++) {
-                        name += split[i];
+                        hname += split[i];
                         if (i + 1 < split.length) {
-                            name += " ";
+                            hname += " ";
                         }
                     }
                     Searcher searcher = new Searcher(helpList);
-                    searcher.addPlayer(player);
-                    searcher.setQuery(name);
+                    searcher.addPlayer(sender);
+                    searcher.setQuery(hname);
                     searcher.search();
 
                     /**
                      * /help [plugin] (#)
                      */
                 } else if (split.length == 1 || (split.length == 2 && isInteger(split[1]))) {
-                    Lister lister = new Lister(helpList, split[0], player);
+                    Lister lister = new Lister(helpList, split[0], sender);
                     if (split.length == 2) {
                         int page = Integer.parseInt(split[1]);
                         if (page < 1) {
-                            player.sendMessage(ChatColor.RED + "Page number can't be below 1.");
+                            sender.sendMessage(ChatColor.RED + "Page number can't be below 1.");
                             return true;
-                        } else if (page > lister.getMaxPages(player)) {
-                            player.sendMessage(ChatColor.RED + "There are only " + lister.getMaxPages(player) + " pages of help");
+                        } else if (page > lister.getMaxPages(sender)) {
+                            sender.sendMessage(ChatColor.RED + "There are only " + lister.getMaxPages(sender) + " pages of help");
                             return true;
                         }
                         lister.setPage(page);
@@ -130,7 +130,7 @@ public class Help extends JavaPlugin {
                 }
                 return true;
             }
-        } //TODO Console help
+        //} //TODO Console help
         return false;
     }
 

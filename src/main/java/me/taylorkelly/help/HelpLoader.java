@@ -18,8 +18,9 @@ public class HelpLoader {
             helpFolder.mkdirs();
         }
         int count = 0;
-
-        for (File insideFile : helpFolder.listFiles(new YmlFilter())) {
+        File files[] = helpFolder.listFiles(new YmlFilter());
+        if(files==null) return;
+        for (File insideFile : files) {
             System.out.println(insideFile);
             final Yaml yaml = new Yaml(new SafeConstructor());
             Map<String, Object> root;
@@ -31,18 +32,11 @@ public class HelpLoader {
                 for (String helpKey : root.keySet()) {
                     Map<String, Object> helpNode = (Map<String, Object>) root.get(helpKey);
 
-                    String command = helpNode.get("command").toString();
-                    boolean main = false;
-                    String description = helpNode.get("description").toString();
-                    String plugin = helpNode.get("plugin").toString();
-                    boolean visible = true;
-                    ArrayList<String> permissions = new ArrayList<String>();
-
-
                     if (!helpNode.containsKey("command")) {
                         HelpLogger.warning("A Help entry node is missing a command name");
                         continue;
                     }
+                    String command = helpNode.get("command").toString();
                     if (!helpNode.containsKey("description")) {
                         HelpLogger.warning(command + "'s Help entry is missing a description");
                         continue;
@@ -51,6 +45,12 @@ public class HelpLoader {
                         HelpLogger.warning(command + "'s Help entry is missing a 'plugin'");
                         continue;
                     }
+
+                    boolean main = false;
+                    String description = helpNode.get("description").toString();
+                    String plugin = helpNode.get("plugin").toString();
+                    boolean visible = true;
+                    ArrayList<String> permissions = new ArrayList<String>();
 
                     if (helpNode.containsKey("main")) {
                         if (helpNode.get("main") instanceof Boolean) {
