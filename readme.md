@@ -4,6 +4,11 @@ Help
 jascotty2 Changelog
 -----------------
 
+Version 0.2.3 :
+
+* fixed a null pointer exception in plugin help
+
+
 Version 0.2.2 :
 
 * various null pointer fixes (could have nullpointerException on load without)
