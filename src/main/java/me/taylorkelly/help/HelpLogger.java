@@ -16,11 +16,11 @@ public class HelpLogger {
         log.log(Level.SEVERE, "[HELP] " + string);
     }
 
-    static void info(String string) {
+    public static void info(String string) {
         log.log(Level.INFO, "[HELP] " + string);
     }
 
-    static void warning(String string) {
+    public static void warning(String string) {
         log.log(Level.WARNING, "[HELP] " + string);
     }
 }

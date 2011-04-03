@@ -46,7 +46,7 @@ public class HelpEntry {
         for (String permission : permissions) {
             if (permission.equalsIgnoreCase("OP") && player.isOp()) {
                 return true;
-            } else if (HelpPermissions.permission((Player)player, permission)) {
+            } else if (HelpPermissions.permission((Player) player, permission)) {
                 return true;
             }
         }
@@ -57,43 +57,45 @@ public class HelpEntry {
         ChatColor commandColor = ChatColor.RED;
         ChatColor pluginColor = ChatColor.GREEN;
         ChatColor descriptionColor = ChatColor.WHITE;
-        return String.format("%s/%s%s : (via %s%s%s) %s%s", 
-                commandColor.toString(), command, ChatColor.WHITE.toString(), 
+        return String.format("%s/%s%s : (via %s%s%s) %s%s",
+                commandColor.toString(), command, ChatColor.WHITE.toString(),
                 pluginColor.toString(), plugin, ChatColor.WHITE.toString(),
                 descriptionColor.toString(), description);
     }
     /*
     private static int process(HelpEntry entry) {
-        ChatColor commandColor = ChatColor.RED;
-        ChatColor descriptionColor = ChatColor.WHITE;
-        int width = 325;
+    ChatColor commandColor = ChatColor.RED;
+    ChatColor descriptionColor = ChatColor.WHITE;
+    int width = 325;
 
-        StringBuilder entryBuilder = new StringBuilder();
-        entryBuilder.append(commandColor.toString());
-        entryBuilder.append("/");
-        entryBuilder.append(entry.command);
-        entryBuilder.append(ChatColor.WHITE.toString());
-        entryBuilder.append(" : ");
-        entryBuilder.append(descriptionColor.toString());
-        //Find remaining length left
-        int sizeRemaining = width - MinecraftFontWidthCalculator.getStringWidth(entryBuilder.toString());
-        entryBuilder = new StringBuilder(entryBuilder.toString().replace("[", ChatColor.GRAY.toString() + "[").replace("]", "]" + commandColor.toString()));
+    StringBuilder entryBuilder = new StringBuilder();
+    entryBuilder.append(commandColor.toString());
+    entryBuilder.append("/");
+    entryBuilder.append(entry.command);
+    entryBuilder.append(ChatColor.WHITE.toString());
+    entryBuilder.append(" : ");
+    entryBuilder.append(descriptionColor.toString());
+    //Find remaining length left
+    int sizeRemaining = width - MinecraftFontWidthCalculator.getStringWidth(entryBuilder.toString());
+    entryBuilder = new StringBuilder(entryBuilder.toString().replace("[", ChatColor.GRAY.toString() + "[").replace("]", "]" + commandColor.toString()));
 
-        int descriptionSize = MinecraftFontWidthCalculator.getStringWidth(entry.description);
-        if (sizeRemaining > descriptionSize) {
-            return 1;
-        } else {
-            return 1 + (int) Math.ceil((double) MinecraftFontWidthCalculator.getStringWidth("  " + entry.description) / width);
-        }
+    int descriptionSize = MinecraftFontWidthCalculator.getStringWidth(entry.description);
+    if (sizeRemaining > descriptionSize) {
+    return 1;
+    } else {
+    return 1 + (int) Math.ceil((double) MinecraftFontWidthCalculator.getStringWidth("  " + entry.description) / width);
+    }
     }//*/
-    protected int processLength(){
+
+    protected int processLength() {
         return processLength(command, description);
     }
+
     private static int processLength(String command, String desc) {
         ChatColor commandColor = ChatColor.RED;
         ChatColor descriptionColor = ChatColor.WHITE;
         int width = 325;
-        
+
         String entry = String.format("%s/%s%s : %s", commandColor.toString(),
                 command, ChatColor.WHITE.toString(), descriptionColor.toString());
         //Find remaining length left
@@ -107,7 +109,8 @@ public class HelpEntry {
             return 1 + (int) Math.ceil((double) MinecraftFontWidthCalculator.getStringWidth("  " + desc) / width);
         }
     }
-    void save(File dataFolder) {
+
+    public void save(File dataFolder) {
         File folder = new File(dataFolder, "ExtraHelp");
         File file = new File(folder, plugin + "_orig.yml");
         if (file.exists()) {

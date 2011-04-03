@@ -4,16 +4,21 @@ Help
 jascotty2 Changelog
 -----------------
 
-Version 0.2.3 :
+Version 0.2.4 - 4/2/11
 
-* fixed a null pointer exception in plugin help
+updated an illegalAccess error that was occurring in 617
 
 
-Version 0.2.2 :
+Version 0.2.3 - 3/25/11
 
-* various null pointer fixes (could have nullpointerException on load without)
-* improved help listing
-* added console help support
+fixed a null pointer exception in plugin help
+
+
+Version 0.2.2 - 3/24/11
+
+various null pointer fixes (could have nullpointerException on load without)
+improved help listing
+added console help support
 
 
 Compilation

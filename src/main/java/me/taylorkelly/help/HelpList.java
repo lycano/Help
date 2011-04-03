@@ -14,14 +14,11 @@ import org.bukkit.entity.Player;
 
 public class HelpList {
 
-    private HashMap<String, HelpEntry> mainHelpList;
-    private HashMap<String, HashMap<String, HelpEntry>> pluginHelpList;
-    private LinkedList<HelpEntry> savedList;
+    private HashMap<String, HelpEntry> mainHelpList = new HashMap<String, HelpEntry>();
+    private HashMap<String, HashMap<String, HelpEntry>> pluginHelpList = new HashMap<String, HashMap<String, HelpEntry>>();
+    private LinkedList<HelpEntry> savedList = new LinkedList<HelpEntry>();
 
     HelpList() {
-        mainHelpList = new HashMap<String, HelpEntry>();
-        savedList = new LinkedList<HelpEntry>();
-        pluginHelpList = new HashMap<String, HashMap<String, HelpEntry>>();
     }
 
     public ArrayList<HelpEntry> getSortedHelp(CommandSender player, int start, int size) {
