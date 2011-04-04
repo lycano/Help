@@ -17,13 +17,13 @@ public class Lister {
     private int page;
     private ArrayList<HelpEntry> sortedEntries;
 
-    Lister(HelpList helpList, String plugin, CommandSender player) {
+    public Lister(HelpList helpList, String plugin, CommandSender player) {
         this.helpList = helpList;
         this.player = player;
         this.plugin = helpList.matchPlugin(plugin);
     }
 
-    Lister(HelpList helpList, CommandSender player) {
+    public Lister(HelpList helpList, CommandSender player) {
         this(helpList, null, player);
     }
 

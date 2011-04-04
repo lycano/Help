@@ -18,7 +18,7 @@ public class HelpList {
     private HashMap<String, HashMap<String, HelpEntry>> pluginHelpList = new HashMap<String, HashMap<String, HelpEntry>>();
     private LinkedList<HelpEntry> savedList = new LinkedList<HelpEntry>();
 
-    HelpList() {
+    public HelpList() {
     }
 
     public ArrayList<HelpEntry> getSortedHelp(CommandSender player, int start, int size) {

@@ -10,7 +10,7 @@ public class MatchList {
     public ArrayList<HelpEntry> pluginPartialMatches;
     public ArrayList<HelpEntry> descriptionMatches;
 
-    MatchList(ArrayList<HelpEntry> commandMatches, ArrayList<HelpEntry> pluginExactMatches, ArrayList<HelpEntry> pluginPartialMatches, ArrayList<HelpEntry> descriptionMatches) {
+    public MatchList(ArrayList<HelpEntry> commandMatches, ArrayList<HelpEntry> pluginExactMatches, ArrayList<HelpEntry> pluginPartialMatches, ArrayList<HelpEntry> descriptionMatches) {
         this.commandMatches = commandMatches;
         this.pluginExactMatches = pluginExactMatches;
         this.pluginPartialMatches = pluginPartialMatches;
