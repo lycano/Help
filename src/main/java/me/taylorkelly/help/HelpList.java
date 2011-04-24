@@ -45,16 +45,16 @@ public class HelpList {
                 index++;
             }
         } else {
-                for (int index = 0, currentCount = 0; index < names.size() && ret.size() < size; ++index) {
-                    HelpEntry entry = mainHelpList.get(names.get(index));
-                    if (entry.visible) {
-                        if (currentCount >= start) {
-                            ret.add(entry);
-                        }else {
-                            currentCount++;
-                        }
+            for (int index = 0, currentCount = 0; index < names.size() && ret.size() < size; ++index) {
+                HelpEntry entry = mainHelpList.get(names.get(index));
+                if (entry.visible) {
+                    if (currentCount >= start) {
+                        ret.add(entry);
+                    } else {
+                        currentCount++;
                     }
                 }
+            }
         }
         return ret;
     }
@@ -87,29 +87,25 @@ public class HelpList {
             Collections.sort(names, collator);
 
             if (player instanceof Player) {
-                int index = 0;
-                int currentCount = 0;
-                int lineLength = 0;
-                while (index < names.size() && ret.size() < size){// && lineLength < size) {
-                    String currName = names.get(index);
-                    HelpEntry entry = pluginHelpList.get(plugin).get(currName);
+                //int lineLength = 0;
+                for (int index = 0, currentCount = 0; index < names.size() && ret.size() < size; ++index) {// && lineLength < size) {
+                    HelpEntry entry = pluginHelpList.get(plugin).get(names.get(index));
                     if (entry != null && entry.playerCanUse((Player) player) && entry.visible) {
                         if (currentCount >= start) {
                             ret.add(entry);
-                            lineLength += entry.lineLength;
+                            //lineLength += entry.lineLength;
                         } else {
                             currentCount++;
                         }
                     }
-                    index++;
                 }
             } else {
                 for (int index = 0, currentCount = 0; index < names.size() && ret.size() < size; ++index) {
-                    HelpEntry entry = mainHelpList.get(names.get(index));
+                    HelpEntry entry = pluginHelpList.get(plugin).get(names.get(index));
                     if (entry != null && entry.visible) {
                         if (currentCount >= start) {
                             ret.add(entry);
-                        }else {
+                        } else {
                             currentCount++;
                         }
                     }

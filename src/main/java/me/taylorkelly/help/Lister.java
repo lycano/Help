@@ -134,7 +134,7 @@ public class Lister {
         }
     }
 
-    public String whitespace(int length) {
+    public static String whitespace(int length) {
         int spaceWidth = JMinecraftFontWidthCalculator.getCharWidth(' ');
 
         StringBuilder ret = new StringBuilder();
@@ -146,7 +146,7 @@ public class Lister {
         return ret.toString();
     }
 
-    public String dashes(int length) {
+    public static String dashes(int length) {
         int spaceWidth = JMinecraftFontWidthCalculator.getCharWidth('-');
 
         StringBuilder ret = new StringBuilder();
