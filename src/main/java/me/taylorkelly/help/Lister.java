@@ -81,13 +81,16 @@ public class Lister {
 
             }
         } else {
+            int width = System.getProperty("os.name").startsWith("Windows") ? 80 - 17 : 90;
             if (plugin == null) {
-                player.sendMessage(introTextColor.toString() + "HELP (" + page + "/" + maxPages + ")");
+                player.sendMessage(introDashColor.toString() + JMinecraftFontWidthCalculator.unformattedPadCenter(
+                        introTextColor.toString() + " HELP (" + page + "/" + maxPages + ") " + introDashColor.toString(), width, '-'));
             } else {
                 if (sortedEntries.isEmpty()) {
-                    player.sendMessage(ChatColor.RED.toString() + "Plugin " + plugin + " has no Help entries");
+                    player.sendMessage(ChatColor.RED.toString() + plugin + " has no Help entries");
                 } else {
-                    player.sendMessage(introTextColor.toString() + plugin.toUpperCase() + " HELP (" + page + "/" + maxPages + ")");
+                    player.sendMessage(introDashColor.toString() + JMinecraftFontWidthCalculator.unformattedPadCenter(
+                            introTextColor.toString() + " " + plugin.toUpperCase() + " HELP (" + page + "/" + maxPages + ") " + introDashColor.toString(), width, '-'));
                 }
             }
 
@@ -96,11 +99,21 @@ public class Lister {
                         entry.command, ChatColor.WHITE.toString(), descriptionColor.toString()).
                         replace("[", ChatColor.GRAY.toString() + "[").replace("]", "]" + commandColor.toString());
 
-                    player.sendMessage( "   " + line +
-                            entry.description.replace("[", ChatColor.GRAY.toString() + "[").replace("]", "]"
-                            + descriptionColor.toString()));
+                //Find remaining length left
+                int descriptionSize = entry.description.length();
+                int sizeRemaining = width - JMinecraftFontWidthCalculator.strLen(line);
 
-                
+                if (sizeRemaining > descriptionSize) {
+                    player.sendMessage(line + JMinecraftFontWidthCalculator.unformattedPadLeft(
+                            entry.description.replace("[", ChatColor.GRAY.toString() + "[").
+                            replace("]", "]" + descriptionColor.toString()), sizeRemaining, ' '));
+                } else {
+                    player.sendMessage(line);
+                    player.sendMessage(JMinecraftFontWidthCalculator.unformattedPadLeft(
+                            entry.description.replace("[", ChatColor.GRAY.toString() + "[").
+                            replace("]", "]" + descriptionColor.toString()), width, ' '));
+                }
+
             }
         }
     }
