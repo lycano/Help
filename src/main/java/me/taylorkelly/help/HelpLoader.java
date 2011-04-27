@@ -14,26 +14,33 @@ public class HelpLoader {
 
     public static void load(File dataFolder, HelpList list) {
         File helpFolder = new File(dataFolder, "ExtraHelp");
-        if (helpFolder.exists()) {
+        if (!helpFolder.exists()) {
             helpFolder.mkdirs();
         }
         int count = 0;
         File files[] = helpFolder.listFiles(new YmlFilter());
-        if(files==null) return;
+        if (files == null) {
+            return;
+        }
+        String filesLoaded = "";
         for (File insideFile : files) {
-            System.out.println(insideFile);
+            String fileName = insideFile.getName().replaceFirst(".yml$", "");
             final Yaml yaml = new Yaml(new SafeConstructor());
             Map<String, Object> root;
             FileInputStream input = null;
             try {
                 input = new FileInputStream(insideFile);
                 root = (Map<String, Object>) yaml.load(new UnicodeReader(input));
-
+                if (root == null || root.isEmpty()) {
+                    System.out.println("The file " + insideFile + " is empty");
+                    continue;
+                }
+                int num = 0;
                 for (String helpKey : root.keySet()) {
                     Map<String, Object> helpNode = (Map<String, Object>) root.get(helpKey);
 
                     if (!helpNode.containsKey("command")) {
-                        HelpLogger.warning("A Help entry node is missing a command name");
+                        HelpLogger.warning("Help entry node \"" + helpKey + "\" is missing a command name in " + insideFile);
                         continue;
                     }
                     String command = helpNode.get("command").toString();
@@ -41,14 +48,9 @@ public class HelpLoader {
                         HelpLogger.warning(command + "'s Help entry is missing a description");
                         continue;
                     }
-                    if (!helpNode.containsKey("plugin")) {
-                        HelpLogger.warning(command + "'s Help entry is missing a 'plugin'");
-                        continue;
-                    }
 
                     boolean main = false;
                     String description = helpNode.get("description").toString();
-                    String plugin = helpNode.get("plugin").toString();
                     boolean visible = true;
                     ArrayList<String> permissions = new ArrayList<String>();
 
@@ -77,20 +79,23 @@ public class HelpLoader {
                             permissions.add(helpNode.get("permissions").toString());
                         }
                     }
-
-                    list.customRegisterCommand(command, description, plugin, main, permissions.toArray(new String[]{}), visible);
-                    count++;
+                    list.customRegisterCommand(command, description, fileName, main, permissions.toArray(new String[0]), visible);
+                    ++num;
+                    ++count;
                 }
+                filesLoaded += fileName + String.format("(%d), ", num);
             } catch (Exception ex) {
                 HelpLogger.severe("Error!", ex);
             } finally {
                 try {
-                    input.close();
+                    if (input != null) {
+                        input.close();
+                    }
                 } catch (IOException ex) {
-                    HelpLogger.severe("Error!", ex);
                 }
             }
         }
-        HelpLogger.info(count + " extra help entries loaded");
+        //HelpLogger.info(count + " extra help entries loaded" + (filesLoaded.length()>2 ? " from files: " + filesLoaded.replaceFirst(", $", "") : ""));
+        HelpLogger.info(count + " extra help entries loaded" + (filesLoaded.length() > 2 ? " from files: " + filesLoaded.substring(0, filesLoaded.length() - 2) : ""));
     }
 }

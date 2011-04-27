@@ -14,7 +14,6 @@ public class HelpEntry {
     public String[] permissions;
     public boolean main;
     public String plugin;
-    public int lineLength;
     public boolean visible;
 
     public HelpEntry(String command, String description, String plugin, boolean main, String[] permissions, boolean visible) {
@@ -24,7 +23,6 @@ public class HelpEntry {
         this.main = main;
         this.permissions = permissions;
         this.visible = visible;
-        this.lineLength = processLength(command, description);//process(this);
     }
 
     public HelpEntry(String command, String description, String plugin) {
@@ -40,7 +38,7 @@ public class HelpEntry {
     }
 
     public boolean playerCanUse(CommandSender player) {
-        if (permissions.length == 0 || !(player instanceof Player)) {
+        if (permissions == null || permissions.length == 0 || !(player instanceof Player)) {
             return true;
         }
         for (String permission : permissions) {
@@ -62,57 +60,73 @@ public class HelpEntry {
                 pluginColor.toString(), plugin, ChatColor.WHITE.toString(),
                 descriptionColor.toString(), description);
     }
-    /*
-    private static int process(HelpEntry entry) {
-    ChatColor commandColor = ChatColor.RED;
-    ChatColor descriptionColor = ChatColor.WHITE;
-    int width = 325;
 
-    StringBuilder entryBuilder = new StringBuilder();
-    entryBuilder.append(commandColor.toString());
-    entryBuilder.append("/");
-    entryBuilder.append(entry.command);
-    entryBuilder.append(ChatColor.WHITE.toString());
-    entryBuilder.append(" : ");
-    entryBuilder.append(descriptionColor.toString());
-    //Find remaining length left
-    int sizeRemaining = width - MinecraftFontWidthCalculator.getStringWidth(entryBuilder.toString());
-    entryBuilder = new StringBuilder(entryBuilder.toString().replace("[", ChatColor.GRAY.toString() + "[").replace("]", "]" + commandColor.toString()));
-
-    int descriptionSize = MinecraftFontWidthCalculator.getStringWidth(entry.description);
-    if (sizeRemaining > descriptionSize) {
-    return 1;
-    } else {
-    return 1 + (int) Math.ceil((double) MinecraftFontWidthCalculator.getStringWidth("  " + entry.description) / width);
-    }
-    }//*/
-
-    protected int processLength() {
-        return processLength(command, description);
+    @Override
+    public String toString() {
+        return String.format("%s/%s%s : %s%s",
+                Help.settings.commandColor.toString(), command, ChatColor.WHITE.toString(),
+                Help.settings.descriptionColor.toString(), description).
+                replace("[", Help.settings.commandBracketColor.toString() + "[").replace("]", "]" + Help.settings.commandColor.toString());
     }
 
-    private static int processLength(String command, String desc) {
-        ChatColor commandColor = ChatColor.RED;
-        ChatColor descriptionColor = ChatColor.WHITE;
-        int width = 325;
+    public String chatString() {
+        String line = String.format("%s/%s%s : %s",
+                Help.settings.commandColor.toString(), command, ChatColor.WHITE.toString(),
+                Help.settings.descriptionColor.toString());
 
-        String entry = String.format("%s/%s%s : %s", commandColor.toString(),
-                command, ChatColor.WHITE.toString(), descriptionColor.toString());
-        //Find remaining length left
-        int sizeRemaining = width - JMinecraftFontWidthCalculator.getStringWidth(entry);
-        //entryBuilder = new StringBuilder(entryBuilder.toString().replace("[", ChatColor.GRAY.toString() + "[").replace("]", "]" + commandColor.toString()));
+        int descriptionSize = JMinecraftFontWidthCalculator.getStringWidth(description);
+        int sizeRemaining = JMinecraftFontWidthCalculator.chatwidth - JMinecraftFontWidthCalculator.getStringWidth(line);
 
-        int descriptionSize = JMinecraftFontWidthCalculator.getStringWidth(desc);
-        if (sizeRemaining > descriptionSize) {
-            return 1;
+        line += JMinecraftFontWidthCalculator.strPadLeftChat(
+                description.replace("[", Help.settings.commandBracketColor.toString() + "[").
+                replace("]", "]" + Help.settings.descriptionColor.toString()), sizeRemaining, ' ');
+
+        if (Help.settings.shortenEntries) {
+            return JMinecraftFontWidthCalculator.strChatTrim(line);
+        } else if (sizeRemaining > descriptionSize || !Help.settings.useWordWrap) {
+            return line;
+        } else if (Help.settings.wordWrapRight) {
+            return JMinecraftFontWidthCalculator.strChatWordWrapRight(line, 10, ' ', ':');
         } else {
-            return 1 + (int) Math.ceil((double) JMinecraftFontWidthCalculator.getStringWidth("  " + desc) / width);
+            return JMinecraftFontWidthCalculator.strChatWordWrap(line, 10);
         }
+    }
+
+    public String consoleString(int width) {
+        String line = String.format("%s/%s%s : %s",
+                Help.settings.commandColor.toString(), command, ChatColor.WHITE.toString(),
+                Help.settings.descriptionColor.toString());
+
+        int descriptionSize = JMinecraftFontWidthCalculator.strLen(description);
+        int sizeRemaining = width - JMinecraftFontWidthCalculator.strLen(line);
+
+        line += JMinecraftFontWidthCalculator.unformattedPadLeft(
+                description.replace("[", Help.settings.commandBracketColor.toString() + "[").
+                replace("]", "]" + Help.settings.descriptionColor.toString()), sizeRemaining, ' ');
+
+        if (Help.settings.shortenEntries) {
+            return JMinecraftFontWidthCalculator.strTrim(line, width);
+        } else if (sizeRemaining > descriptionSize || !Help.settings.useWordWrap) {
+            return line;
+        } else if (Help.settings.wordWrapRight) {
+            return JMinecraftFontWidthCalculator.strWordWrapRight(line, width, 10, ' ', ':');
+        } else {
+            return JMinecraftFontWidthCalculator.strWordWrap(line, width, 10);
+        }
+    }
+
+    public void setEntry(HelpEntry toCopy) {
+        this.command = toCopy.command;
+        this.description = toCopy.description;
+        this.plugin = toCopy.plugin;
+        this.main = toCopy.main;
+        this.permissions = toCopy.permissions;
+        this.visible = toCopy.visible;
     }
 
     public void save(File dataFolder) {
         File folder = new File(dataFolder, "ExtraHelp");
-        File file = new File(folder, plugin + "_orig.yml");
+        File file = new File(folder, plugin + ".yml");//_orig
         if (file.exists()) {
             try {
                 file.createNewFile();
@@ -125,12 +139,12 @@ public class HelpEntry {
         String node = command.replace(" ", "");
         config.setProperty(node + ".command", command);
         config.setProperty(node + ".description", description);
-        config.setProperty(node + ".plugin", plugin);
+        //config.setProperty(node + ".plugin", plugin);
         config.setProperty(node + ".main", main);
         if (permissions.length != 0) {
             config.setProperty(node + ".permissions", permissions);
         }
-        config.setProperty(node + ".visible", true);
+        config.setProperty(node + ".visible", visible);
         config.save();
     }
 }

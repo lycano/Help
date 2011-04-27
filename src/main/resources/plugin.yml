@@ -1,6 +1,7 @@
 name: Help
-version: 0.2.4.1
+version: 0.3
 main: me.taylorkelly.help.Help
+authors: [jascotty2, tkelly]
 commands:
   help:
     description: Your friendly /help menu

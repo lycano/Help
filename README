@@ -4,6 +4,22 @@ Help
 jascotty2 Changelog
 -----------------
 
+Version 0.3 - ?
+plugin console output fixed
+console output width changed for when running windows
+plugin help ovverride can be disabled (default)
+[]- plugin help registering is ignored if the command exists already
+- alternatively, can be disabled completely
+ExtraHelp now uses filename as plugin name (plugin field no longer used)
+added formatting options: 
+- shortenEntries : can show in old, one-line style
+- chat line (useWordWrap:false) - minecraft chat wraps to next line
+- columns (useWordWrap:true) - command on left, description in word wrap line(s)
+- - can be right-aligned (wordWrapRight:true)
+plugin entries can be set to not sorted (listed in the order found in the help file)
+"/help reload" is now op-only
+
+
 Version 0.2.4.1 - 4/4/11
 another illegalAccessError (hopefully) resolved
 
