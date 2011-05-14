@@ -38,6 +38,12 @@
 			<version>[2.5.2,)</version>
 			<type>jar</type>
 			<scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>Help</artifactId>
+                    <groupId>me.taylorkelly.help</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
     <build>
