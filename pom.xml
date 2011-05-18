@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>me.taylorkelly.help</groupId>
     <artifactId>Help</artifactId>
-    <version>1</version>
+    <version>0.3</version>
     <name>Help</name>
     <url>http://www.bukkit.org</url>
     <repositories>
@@ -17,13 +17,6 @@
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
             <version>0.0.1-SNAPSHOT</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.anjocaido</groupId>
-            <artifactId>groupmanager</artifactId>
-            <version>1.0</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
