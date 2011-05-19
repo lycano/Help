@@ -9,7 +9,7 @@
     <repositories>
       <repository>
         <id>luricos.de-repo</id>
-        <url>http://repo.luricos.de/bukkit-plugins</url>
+        <url>http://repo.luricos.de/bukkit-plugins/</url>
       </repository>
     </repositories>  
     <dependencies>
