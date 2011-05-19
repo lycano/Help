@@ -6,12 +6,12 @@
     <version>0.3</version>
     <name>Help</name>
     <url>http://www.bukkit.org</url>
-    <repositories>
-        <repository>
-            <id>bukkut-repo</id>
-            <url>http://artifacts.lukegb.com/artifactory/repo</url>
-        </repository>
-    </repositories>
+	<repositories>
+	  <repository>
+	    <id>bukkit-plugins</id>
+	    <url>http://repo.luricos.de/bukkit-plugins</url>
+	  </repository>
+	</repositories>  
     <dependencies>
         <dependency>
             <groupId>org.bukkit</groupId>
