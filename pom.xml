@@ -6,12 +6,12 @@
     <version>0.3</version>
     <name>Help</name>
     <url>http://www.bukkit.org</url>
-	<repositories>
-	  <repository>
-	    <id>bukkit-plugins</id>
-	    <url>http://repo.luricos.de/bukkit-plugins</url>
-	  </repository>
-	</repositories>  
+    <repositories>
+      <repository>
+        <id>luricos.de-repo</id>
+        <url>http://repo.luricos.de/bukkit-plugins</url>
+      </repository>
+    </repositories>  
     <dependencies>
         <dependency>
             <groupId>org.bukkit</groupId>
@@ -31,12 +31,6 @@
             <version>[2.5.2,)</version>
             <type>jar</type>
             <scope>compile</scope>
-            <exclusions>
-                <exclusion>
-                    <artifactId>Help</artifactId>
-                    <groupId>me.taylorkelly.help</groupId>
-                </exclusion>
-            </exclusions>
         </dependency>
     </dependencies>
     <build>
